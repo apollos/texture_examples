@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+heat_gl
+heat_perf
+benchmark
+
+# image file
+*.png
+*.dmp
+
+# vscode
+.vscode
