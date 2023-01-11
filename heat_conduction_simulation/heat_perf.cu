@@ -1,5 +1,5 @@
 #include "cuda.h"
-#include "../common/cpu_anim.h"
+#include "../common/cpu_anim2.h"
 #include "../common/book.h"
 
 #define DIM 1024

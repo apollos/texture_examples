@@ -31,16 +31,18 @@ ALL_CCFLAGS += $(addprefix -Xcompiler ,$(CCFLAGS))
 ALL_CCFLAGS += $(addprefix -Xcompiler ,$(EXTRA_CCFLAGS))
 
 
-ALL_LDFLAGS :=
+ALL_LDFLAGS := 
 ALL_LDFLAGS += $(ALL_CCFLAGS)
 ALL_LDFLAGS += $(addprefix -Xlinker ,$(LDFLAGS))
 ALL_LDFLAGS += $(addprefix -Xlinker ,$(EXTRA_LDFLAGS))
+
+GL_LDFLAGS := -lglut -lGL -lGLU
 
 # Common includes and paths for CUDA
 INCLUDES  := -I../common
 LIBRARIES :=
 
-ALL_CCFLAGS += --std=c++11
+ALL_CCFLAGS += --std=c++11 
 
 
 ################################################################################
@@ -48,14 +50,22 @@ ALL_CCFLAGS += --std=c++11
 # Target rules
 all: build
 
-build: benchmark
+build: heat_gl heat_perf
 
-benchmark.o:benchmark.cu
+nogl: heat_perf
+
+heat_gl.o:heat_gl.cu
 	$(EXEC) $(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
 
-benchmark: benchmark.o
+heat_gl: heat_gl.o
+	$(EXEC) $(NVCC) $(ALL_LDFLAGS) $(GL_LDFLAGS) $(GENCODE_FLAGS) -o $@ $+ $(LIBRARIES)
+
+heat_perf.o:heat_perf.cu
+	$(EXEC) $(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
+
+heat_perf: heat_perf.o
 	$(EXEC) $(NVCC) $(ALL_LDFLAGS) $(GENCODE_FLAGS) -o $@ $+ $(LIBRARIES)
 
 clean:
-	rm -f benchmark benchmark.o
+	rm -f heat_perf heat_perf.o heat_gl heat_gl.o texture_result_file.* linear_result_file.*
 
